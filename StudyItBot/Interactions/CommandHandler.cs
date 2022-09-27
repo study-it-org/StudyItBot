@@ -17,7 +17,13 @@ public class CommandHandler
         _services = services;
         _interactionService = (services.GetService(typeof(InteractionService)) as InteractionService)!;
         _interactionService.SlashCommandExecuted += PostSlashCommandExecution;
+        client.InteractionCreated += HandleInteraction;
+    }
 
+    private async Task HandleInteraction(SocketInteraction socketInteraction)
+    {
+        var ctx = new SocketInteractionContext(_client, socketInteraction);
+        await _interactionService.ExecuteCommandAsync(ctx, _services);
     }
 
 

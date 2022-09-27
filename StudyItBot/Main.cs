@@ -70,28 +70,57 @@ public class Program
     private static Task OnLog(LogMessage arg)
     {
         var logger = LogManager.GetLogger(arg.Source);
-        switch (arg.Severity)
+        if (arg.Message != null)
         {
-            case LogSeverity.Critical:
-                logger.Fatal(arg.Message);
-                break;
-            case LogSeverity.Error:
-                logger.Error(arg.Message);
-                break;
-            case LogSeverity.Warning:
-                logger.Warn(arg.Message);
-                break;
-            case LogSeverity.Info:
-                logger.Info(arg.Message);
-                break;
-            case LogSeverity.Verbose:
-                logger.Debug(arg.Message);
-                break;
-            case LogSeverity.Debug:
-                logger.Trace(arg.Message);
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
+            switch (arg.Severity)
+            {
+                case LogSeverity.Critical:
+                    logger.Fatal(arg.Message);
+                    break;
+                case LogSeverity.Error:
+                    logger.Error(arg.Message);
+                    break;
+                case LogSeverity.Warning:
+                    logger.Warn(arg.Message);
+                    break;
+                case LogSeverity.Info:
+                    logger.Info(arg.Message);
+                    break;
+                case LogSeverity.Verbose:
+                    logger.Debug(arg.Message);
+                    break;
+                case LogSeverity.Debug:
+                    logger.Trace(arg.Message);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+        }
+        else if (arg.Exception != null)
+        {
+            switch (arg.Severity)
+            {
+                case LogSeverity.Critical:
+                    logger.Fatal(arg.Exception);
+                    break;
+                case LogSeverity.Error:
+                    logger.Error(arg.Exception);
+                    break;
+                case LogSeverity.Warning:
+                    logger.Warn(arg.Exception);
+                    break;
+                case LogSeverity.Info:
+                    logger.Info(arg.Exception);
+                    break;
+                case LogSeverity.Verbose:
+                    logger.Debug(arg.Exception);
+                    break;
+                case LogSeverity.Debug:
+                    logger.Trace(arg.Exception);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
         }
 
         return Task.CompletedTask;
