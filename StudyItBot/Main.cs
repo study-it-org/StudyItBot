@@ -23,7 +23,7 @@ public class Program
             return;
         }
 
-        await _discordSocketClient.LoginAsync(TokenType.Bot, "");
+        await _discordSocketClient.LoginAsync(TokenType.Bot, token);
         await Task.Delay(-1);
     }
 }
