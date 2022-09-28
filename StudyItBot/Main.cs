@@ -2,9 +2,15 @@
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
+using MailKit.Net.Smtp;
 using Microsoft.Extensions.DependencyInjection;
 using NLog;
 using StudyItBot.Interactions;
+using StudyItBot.Models;
+using StudyItBot.Services;
+using SurrealDB.Configuration;
+using SurrealDB.Driver.Rpc;
+using SurrealDB.Models;
 
 namespace StudyItBot;
 
@@ -21,10 +27,31 @@ public class Program
 
     private async Task MainAsync()
     {
-        var token = Environment.GetEnvironmentVariable("token");
+        var token = Environment.GetEnvironmentVariable("bot_token");
         if (token == null)
         {
-            _logger.Fatal("No token provided in the \"token\" environment variable");
+            _logger.Fatal("No token provided in the \"bot_token\" environment variable");
+            return;
+        }
+
+        var emailUsername = Environment.GetEnvironmentVariable("email_username");
+        if (emailUsername == null)
+        {
+            _logger.Fatal("No token provided in the \"email_username\" environment variable");
+            return;
+        }
+
+        var emailPassword = Environment.GetEnvironmentVariable("email_password");
+        if (emailPassword == null)
+        {
+            _logger.Fatal("No token provided in the \"email_password\" environment variable");
+            return;
+        }
+
+        var emailServer = Environment.GetEnvironmentVariable("email_server");
+        if (emailServer == null)
+        {
+            _logger.Fatal("No token provided in the \"email_server\" environment variable");
             return;
         }
 
@@ -45,9 +72,28 @@ public class Program
         var interactionService = new InteractionService(_discordSocketClient, interactionServiceConfig);
         interactionService.Log += OnLog;
 
+        var cfg = Config.Create()
+            .WithEndpoint("127.0.0.1:8000")
+            .WithDatabase("test")
+            .WithNamespace("test")
+            .WithBasicAuth("root", "root")
+            .WithRpc(true).Build();
+
+        DatabaseRpc db = new(cfg);
+        await db.Open();
+        _logger.Info("Successfully connected to Database.");
+
+
+
+
+        var dbService = new DatabaseService(db);
+
         _services = new ServiceCollection()
             .AddSingleton(clientConfig)
             .AddSingleton(_discordSocketClient)
+            .AddSingleton(new SwotService())
+            .AddSingleton(new SmtpService(emailServer, emailUsername, emailPassword))
+            .AddSingleton(dbService)
             .AddSingleton(interactionServiceConfig)
             .AddSingleton(interactionService).BuildServiceProvider();
         _discordSocketClient.Log += OnLog;
