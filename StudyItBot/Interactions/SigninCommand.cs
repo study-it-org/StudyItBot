@@ -1,10 +1,7 @@
-﻿using System.Net;
-using Discord;
+﻿using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
 using JetBrains.Annotations;
-using MailKit.Net.Smtp;
-using MimeKit;
 using NLog;
 using StudyItBot.Models;
 using StudyItBot.Services;
@@ -96,7 +93,7 @@ public class SigninCommand : InteractionModuleBase<SocketInteractionContext>
         }
 
         //TODO: The User doesn't exist yet. Create it. And send verification E-Mail
-        user = await _dbService.CreateNewUserAsync(Context.User.Id, new DbUserData
+        user = await _dbService.CreateUserAsync(Context.User.Id, new DbUserData
         {
             Firstname = modal.FirstName,
         });

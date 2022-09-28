@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.Design;
+using System.Reflection;
 using Discord;
 using Discord.Interactions;
 using Discord.WebSocket;
@@ -19,9 +20,11 @@ public class Program
     private DiscordSocketClient _discordSocketClient = null!;
     private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
     private IServiceProvider _services = null!;
+    public static bool IsReady = false;
 
     public static void Main(string[] args)
     {
+        LogManager.Setup().SetupExtensions(builder => builder.RegisterAssembly(Assembly.GetEntryAssembly()));
         new Program().MainAsync().GetAwaiter().GetResult();
     }
 
@@ -55,6 +58,7 @@ public class Program
             return;
         }
 
+
         var clientConfig = new DiscordSocketConfig
         {
             LogLevel = LogSeverity.Verbose
@@ -84,8 +88,6 @@ public class Program
         _logger.Info("Successfully connected to Database.");
 
 
-
-
         var dbService = new DatabaseService(db);
 
         _services = new ServiceCollection()
@@ -111,6 +113,7 @@ public class Program
     {
         var cmdHandler = new CommandHandler(_discordSocketClient, _services);
         await cmdHandler.InstallCommandsAsync();
+        IsReady = true;
     }
 
     private static Task OnLog(LogMessage arg)

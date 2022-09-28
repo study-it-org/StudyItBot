@@ -26,24 +26,47 @@ public class DatabaseService
         return response.UncheckedResult.GetObject<T>();
     }
 
-    public async Task<DbUserData?> CreateNewUserAsync(ulong userId, DbUserData? initialData = null)
-    {
-        var response = await _db.Create($"user:{userId}", initialData ?? new DbUserData());
+    #region User Functions
 
+    public async Task<DbUserData?> CreateUserAsync(ulong userId, DbUserData? initialData = null)
+    {
+        var response = await _db.Create(DbUserData.GetKey(userId), initialData ?? new DbUserData());
         return UnwrapSafely<DbUserData>(response);
     }
 
     public async Task<DbUserData?> SelectUserAsync(ulong userId)
     {
-        var response = await _db.Select($"user:{userId}");
-
+        var response = await _db.Select(DbUserData.GetKey(userId));
         return UnwrapSafely<DbUserData>(response);
     }
 
     public async Task<DbUserData?> ChangeUserAsync(ulong userId, DbUserData updatedData)
     {
-        var response = await _db.Change($"user:{userId}", updatedData);
-
+        var response = await _db.Change(DbUserData.GetKey(userId), updatedData);
         return UnwrapSafely<DbUserData>(response);
     }
+
+    #endregion
+
+    #region Guild Functions
+
+    public async Task<DbGuildData?> CreateGuildSettingsAsync(ulong guildId, DbGuildData? initialData = null)
+    {
+        var response = await _db.Create(DbGuildData.GetKey(guildId), initialData ?? new DbGuildData());
+        return UnwrapSafely<DbGuildData>(response);
+    }
+
+    public async Task<DbGuildData?> SelectGuildSettingsAsync(ulong guildId)
+    {
+        var response = await _db.Select(DbGuildData.GetKey(guildId));
+        return UnwrapSafely<DbGuildData>(response);
+    }
+
+    public async Task<DbGuildData?> ChangeGuildSettingsAsync(ulong userId, DbGuildData updatedData)
+    {
+        var response = await _db.Change(DbGuildData.GetKey(userId), updatedData);
+        return UnwrapSafely<DbGuildData>(response);
+    }
+
+    #endregion
 }
