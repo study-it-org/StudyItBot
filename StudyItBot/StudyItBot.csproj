@@ -14,7 +14,7 @@
         <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="6.0.0" />
         <PackageReference Include="Nager.PublicSuffix" Version="2.4.0" />
         <PackageReference Include="NLog" Version="5.0.4" />
-        <PackageReference Include="SurrealDB.Driver.Rpc" Version="1.0.5" />
+        <PackageReference Include="SurrealDB.Driver.Rpc" Version="1.0.7" />
     </ItemGroup>
 
     <ItemGroup>

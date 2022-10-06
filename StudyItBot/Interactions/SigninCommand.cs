@@ -44,6 +44,7 @@ public class SigninCommand : InteractionModuleBase<SocketInteractionContext>
 
     [UsedImplicitly]
     [SlashCommand("signup", "Starts the Verification process.")]
+    [ComponentInteraction("signup_button")]
     [EnabledInDm(false)]
     public async Task SignupAsync()
     {
@@ -52,7 +53,7 @@ public class SigninCommand : InteractionModuleBase<SocketInteractionContext>
 
     [UsedImplicitly]
     [ModalInteraction("signup_modal")]
-    public async Task ModalResponse(SignUpModal modal)
+    public async Task SignupModalResponse(SignUpModal modal)
     {
         await DeferAsync();
         try
@@ -62,7 +63,7 @@ public class SigninCommand : InteractionModuleBase<SocketInteractionContext>
                 properties.Nickname = $"{modal.FirstName} {modal.LastName}".Trim();
             });
         }
-        catch (Exception e)
+        catch (Exception)
         {
             _logger.Warn($"Failed to change username for {Context.User.Username}");
         }

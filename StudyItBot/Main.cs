@@ -75,7 +75,8 @@ public class Program
 
         var interactionService = new InteractionService(_discordSocketClient, interactionServiceConfig);
         interactionService.Log += OnLog;
-
+        
+        //TODO: Add ENV variables for Database
         var cfg = Config.Create()
             .WithEndpoint("127.0.0.1:8000")
             .WithDatabase("test")
